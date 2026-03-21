@@ -74,8 +74,9 @@ function S:WorldMapFrame()
 	end
 
 	local QuestScrollFrame = _G.QuestScrollFrame
+	if not QuestScrollFrame.DetailFrame then return end
 	QuestScrollFrame.DetailFrame:StripTextures()
-	QuestScrollFrame.DetailFrame.BottomDetail:Hide()
+	if QuestScrollFrame.DetailFrame.BottomDetail then QuestScrollFrame.DetailFrame.BottomDetail:Hide() end
 	QuestScrollFrame.Contents.Separator.Divider:Hide()
 
 	local QuestScrollFrameScrollBar = _G.QuestScrollFrame.ScrollBar

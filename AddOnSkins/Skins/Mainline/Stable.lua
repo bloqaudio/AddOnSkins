@@ -37,6 +37,7 @@ function S:PetStableFrame()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.stable) then return end
 
 	local PetStableFrame = _G.PetStableFrame
+	if not PetStableFrame then return end
 	S:HandlePortraitFrame(PetStableFrame)
 
 	_G.PetStableLeftInset:StripTextures()

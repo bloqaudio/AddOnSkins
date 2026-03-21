@@ -9,10 +9,10 @@ local GetMoney = GetMoney
 local GetQuestID = GetQuestID
 local CreateFrame = CreateFrame
 local GetNumQuestLeaderBoards = GetNumQuestLeaderBoards
-local GetNumQuestLogRewardSpells = GetNumQuestLogRewardSpells
+local GetNumQuestLogRewardSpells = GetNumQuestLogRewardSpells or function() return 0 end
 local GetQuestBackgroundMaterial = GetQuestBackgroundMaterial
 local GetQuestLogLeaderBoard = GetQuestLogLeaderBoard
-local GetNumRewardSpells = GetNumRewardSpells
+local GetNumRewardSpells = GetNumRewardSpells or function() return 0 end
 local hooksecurefunc = hooksecurefunc
 
 local C_QuestLog_GetRequiredMoney = C_QuestLog.GetRequiredMoney
@@ -183,6 +183,7 @@ function S:QuestInfoItem_OnClick() -- self is not S
 end
 
 function S:QuestLogQuests_Update() -- self is not S
+	if not _G.QuestMapFrame.QuestsFrame.Contents then return end
 	for _, child in next, { _G.QuestMapFrame.QuestsFrame.Contents:GetChildren() } do
 		if child.ButtonText and not child.questID then
 			child:Size(16, 16)
@@ -359,10 +360,10 @@ end
 function S:BlizzardQuestFrames()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.quest) then return end
 
-	S:HandleScrollBar(_G.QuestProgressScrollFrameScrollBar)
-	S:HandleScrollBar(_G.QuestRewardScrollFrameScrollBar)
-	S:HandleScrollBar(_G.QuestDetailScrollFrameScrollBar)
-	S:HandleScrollBar(_G.QuestGreetingScrollFrameScrollBar)
+	if _G.QuestProgressScrollFrameScrollBar then S:HandleScrollBar(_G.QuestProgressScrollFrameScrollBar) end
+	if _G.QuestRewardScrollFrameScrollBar then S:HandleScrollBar(_G.QuestRewardScrollFrameScrollBar) end
+	if _G.QuestDetailScrollFrameScrollBar then S:HandleScrollBar(_G.QuestDetailScrollFrameScrollBar) end
+	if _G.QuestGreetingScrollFrameScrollBar then S:HandleScrollBar(_G.QuestGreetingScrollFrameScrollBar) end
 
 	local QuestInfoSkillPointFrame = _G.QuestInfoSkillPointFrame
 	QuestInfoSkillPointFrame:StripTextures()
@@ -391,7 +392,7 @@ function S:BlizzardQuestFrames()
 	hooksecurefunc('QuestInfo_Display', S.QuestInfo_Display)
 	hooksecurefunc('QuestInfoItem_OnClick', S.QuestInfoItem_OnClick)
 	hooksecurefunc('QuestLogQuests_Update', S.QuestLogQuests_Update) -- Skin the Plus Minus buttons in the QuestLog
-	hooksecurefunc(_G.CampaignCollapseButtonMixin, 'UpdateState', S.CampaignCollapseButton_UpdateState) -- Plus Minus buttons for the CampaignHeaders in the QuestLog
+	if _G.CampaignCollapseButtonMixin then hooksecurefunc(_G.CampaignCollapseButtonMixin, 'UpdateState', S.CampaignCollapseButton_UpdateState) end -- Plus Minus buttons for the CampaignHeaders in the QuestLog
 
 	for _, frame in pairs({'HonorFrame', 'XPFrame', 'SpellFrame', 'SkillPointFrame', 'ArtifactXPFrame', 'TitleFrame', 'WarModeBonusFrame'}) do
 		HandleReward(_G.MapQuestInfoRewardsFrame[frame])
@@ -484,9 +485,13 @@ function S:BlizzardQuestFrames()
 		_G.QuestModelScene:Point('TOPLEFT', frame, 'TOPRIGHT', (x or 0) + 6, y or 0)
 	end)
 
-	_G.QuestNPCModelTextFrame:StripTextures()
-	_G.QuestNPCModelTextFrame:SetTemplate('Transparent')
-	S:HandleScrollBar(_G.QuestNPCModelTextScrollFrame.ScrollBar)
+	if _G.QuestNPCModelTextFrame then
+		_G.QuestNPCModelTextFrame:StripTextures()
+		_G.QuestNPCModelTextFrame:SetTemplate('Transparent')
+		if _G.QuestNPCModelTextScrollFrame and _G.QuestNPCModelTextScrollFrame.ScrollBar then
+			S:HandleScrollBar(_G.QuestNPCModelTextScrollFrame.ScrollBar)
+		end
+	end
 
 	local QuestLogPopupDetailFrame = _G.QuestLogPopupDetailFrame
 	S:HandlePortraitFrame(QuestLogPopupDetailFrame)
@@ -495,7 +500,7 @@ function S:BlizzardQuestFrames()
 	S:HandleButton(_G.QuestLogPopupDetailFrameShareButton)
 	S:HandleButton(_G.QuestLogPopupDetailFrameTrackButton)
 	_G.QuestLogPopupDetailFrameScrollFrame:StripTextures()
-	S:HandleScrollBar(_G.QuestLogPopupDetailFrameScrollFrameScrollBar)
+	if _G.QuestLogPopupDetailFrameScrollFrameScrollBar then S:HandleScrollBar(_G.QuestLogPopupDetailFrameScrollFrameScrollBar) end
 	QuestLogPopupDetailFrame:SetTemplate('Transparent')
 
 	QuestLogPopupDetailFrame.ShowMapButton:StripTextures()

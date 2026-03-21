@@ -51,7 +51,7 @@ local function HandleRoleChecks(button, ...)
 	button.bg:Size(40, 40)
 	button.bg:SetAlpha(0.6)
 
-	S:HandleCheckBox(button.CheckBox)
+	if button.CheckBox then S:HandleCheckBox(button.CheckBox) end
 end
 
 local function HandleCommunitiesButtons(button)
@@ -156,7 +156,7 @@ function S:Blizzard_Communities()
 	CommunitiesFrameCommunitiesList.ScrollBar:GetChildren():Hide()
 	S:HandleTrimScrollBar(CommunitiesFrameCommunitiesList.ScrollBar)
 	_G.ChannelFrame.ChannelRoster.ScrollBar:StripTextures()
-	S:HandleDropDownBox(CommunitiesFrame.StreamDropDownMenu)
+	if CommunitiesFrame.StreamDropDownMenu then S:HandleDropDownBox(CommunitiesFrame.StreamDropDownMenu) end
 
 	hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'Update', function(frame)
 		for _, child in next, { frame.ScrollTarget:GetChildren() } do
@@ -181,7 +181,7 @@ function S:Blizzard_Communities()
 	S:HandleButton(CommunitiesFrame.InviteButton)
 	S:HandleNextPrevButton(CommunitiesFrame.AddToChatButton)
 
-	S:HandleDropDownBox(CommunitiesFrame.CommunitiesListDropDownMenu)
+	if CommunitiesFrame.CommunitiesListDropDownMenu then S:HandleDropDownBox(CommunitiesFrame.CommunitiesListDropDownMenu) end
 
 	hooksecurefunc(_G.CommunitiesNotificationSettingsStreamEntryMixin, 'SetFilter', function(s)
 		s.ShowNotificationsButton:Size(20, 20)
@@ -197,7 +197,7 @@ function S:Blizzard_Communities()
 
 	CommunitiesFrame.Chat:StripTextures()
 	CommunitiesFrame.Chat.InsetFrame:SetTemplate('Transparent')
-	S:HandleScrollBar(CommunitiesFrame.Chat.MessageFrame.ScrollBar)
+	if CommunitiesFrame.Chat.MessageFrame.ScrollBar then S:HandleScrollBar(CommunitiesFrame.Chat.MessageFrame.ScrollBar) end
 
 	S:HandleEditBox(CommunitiesFrame.ChatEditBox)
 	CommunitiesFrame.ChatEditBox:Size(120, 20)
@@ -258,7 +258,7 @@ function S:Blizzard_Communities()
 	local ClubFinderGuildFinderFrame = _G.ClubFinderGuildFinderFrame
 	ClubFinderGuildFinderFrame:StripTextures()
 
-	S:HandleDropDownBox(_G.ClubFinderLanguageDropdown)
+	if _G.ClubFinderLanguageDropdown then S:HandleDropDownBox(_G.ClubFinderLanguageDropdown) end
 	S:HandleDropDownBox(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
 	S:HandleDropDownBox(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
 
@@ -325,7 +325,7 @@ function S:Blizzard_Communities()
 	ColumnDisplay.InsetBorderTop:Hide()
 
 	S:HandleInsetFrame(MemberList.InsetFrame)
-	S:HandleDropDownBox(CommunitiesFrame.GuildMemberListDropDownMenu)
+	if CommunitiesFrame.GuildMemberListDropDownMenu then S:HandleDropDownBox(CommunitiesFrame.GuildMemberListDropDownMenu) end
 	S:HandleButton(CommunitiesFrame.CommunitiesControlFrame.GuildControlButton)
 	S:HandleButton(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton)
 	S:HandleButton(CommunitiesFrame.CommunitiesControlFrame.CommunitiesSettingsButton)
@@ -397,7 +397,7 @@ function S:Blizzard_Communities()
 	GuildDetails.InsetBorderBottomLeft2:Hide()
 	GuildDetails.InsetBorderTopLeft2:Hide()
 
-	S:HandleScrollBar(_G.CommunitiesFrameGuildDetailsFrameInfoScrollBar)
+	if _G.CommunitiesFrameGuildDetailsFrameInfoScrollBar then S:HandleScrollBar(_G.CommunitiesFrameGuildDetailsFrameInfoScrollBar) end
 	S:HandleTrimScrollBar(_G.CommunitiesFrameGuildDetailsFrameNews.ScrollBar)
 
 	hooksecurefunc('GuildNewsButton_SetNews', function(button, news_id)
@@ -476,7 +476,7 @@ function S:Blizzard_Communities()
 	EditFrame:StripTextures()
 	EditFrame:SetTemplate('Transparent')
 	EditFrame.Container.NineSlice:SetTemplate('Transparent')
-	S:HandleScrollBar(_G.CommunitiesGuildTextEditFrameScrollBar)
+	if _G.CommunitiesGuildTextEditFrameScrollBar then S:HandleScrollBar(_G.CommunitiesGuildTextEditFrameScrollBar) end
 	S:HandleButton(_G.CommunitiesGuildTextEditFrameAcceptButton)
 
 	local closeButton = select(4, _G.CommunitiesGuildTextEditFrame:GetChildren())
@@ -489,7 +489,7 @@ function S:Blizzard_Communities()
 	GuildLogFrame:SetTemplate('Transparent')
 	GuildLogFrame.Container.NineSlice:SetTemplate('Transparent')
 
-	S:HandleScrollBar(_G.CommunitiesGuildLogFrameScrollBar)
+	if _G.CommunitiesGuildLogFrameScrollBar then S:HandleScrollBar(_G.CommunitiesGuildLogFrameScrollBar) end
 	S:HandleCloseButton(_G.CommunitiesGuildLogFrameCloseButton)
 	closeButton = select(3, _G.CommunitiesGuildLogFrame:GetChildren()) -- swap local variable
 	S:HandleButton(closeButton)
@@ -513,7 +513,7 @@ function S:Blizzard_Communities()
 
 	-- Notification Settings Dialog
 	local NotificationSettings = _G.CommunitiesFrame.NotificationSettingsDialog
-	S:HandleDropDownBox(NotificationSettings.CommunitiesListDropDownMenu)
+	if NotificationSettings.CommunitiesListDropDownMenu then S:HandleDropDownBox(NotificationSettings.CommunitiesListDropDownMenu) end
 	S:HandleCheckBox(NotificationSettings.ScrollFrame.Child.QuickJoinButton)
 	S:HandleButton(NotificationSettings.ScrollFrame.Child.AllButton)
 	S:HandleButton(NotificationSettings.ScrollFrame.Child.NoneButton)
@@ -527,7 +527,7 @@ function S:Blizzard_Communities()
 	S:HandleEditBox(EditStreamDialog.NameEdit)
 	EditStreamDialog.NameEdit:Size(280, 20)
 	S:HandleEditBox(EditStreamDialog.Description)
-	S:HandleCheckBox(EditStreamDialog.TypeCheckBox)
+	if EditStreamDialog.TypeCheckBox then S:HandleCheckBox(EditStreamDialog.TypeCheckBox) end
 
 	S:HandleButton(EditStreamDialog.Accept)
 	S:HandleButton(EditStreamDialog.Cancel)
@@ -560,22 +560,24 @@ function S:Blizzard_Communities()
 
 	-- Invite Frame
 	local TicketManager = _G.CommunitiesTicketManagerDialog
-	TicketManager:StripTextures()
-	TicketManager:SetTemplate('Transparent')
-	TicketManager.InviteManager.ArtOverlay:Hide()
-	TicketManager.InviteManager.ColumnDisplay:StripTextures()
-	TicketManager.InviteManager.ColumnDisplay.InsetBorderLeft:Hide()
-	TicketManager.InviteManager.ColumnDisplay.InsetBorderBottomLeft:Hide()
+	if TicketManager then
+		TicketManager:StripTextures()
+		TicketManager:SetTemplate('Transparent')
+		TicketManager.InviteManager.ArtOverlay:Hide()
+		TicketManager.InviteManager.ColumnDisplay:StripTextures()
+		TicketManager.InviteManager.ColumnDisplay.InsetBorderLeft:Hide()
+		TicketManager.InviteManager.ColumnDisplay.InsetBorderBottomLeft:Hide()
 
-	S:HandleButton(TicketManager.LinkToChat)
-	S:HandleButton(TicketManager.Copy)
-	S:HandleButton(TicketManager.Close)
-	S:HandleButton(TicketManager.GenerateLinkButton)
+		S:HandleButton(TicketManager.LinkToChat)
+		S:HandleButton(TicketManager.Copy)
+		S:HandleButton(TicketManager.Close)
+		S:HandleButton(TicketManager.GenerateLinkButton)
 
-	S:HandleDropDownBox(TicketManager.ExpiresDropDownMenu)
-	S:HandleDropDownBox(TicketManager.UsesDropDownMenu)
+		if TicketManager.ExpiresDropDownMenu then S:HandleDropDownBox(TicketManager.ExpiresDropDownMenu) end
+		if TicketManager.UsesDropDownMenu then S:HandleDropDownBox(TicketManager.UsesDropDownMenu) end
 
-	S:HandleButton(TicketManager.MaximizeButton)
+		S:HandleButton(TicketManager.MaximizeButton)
+	end
 
 	-- InvitationsFrames
 	local ClubFinderInvitationFrame = CommunitiesFrame.ClubFinderInvitationFrame

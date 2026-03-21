@@ -172,8 +172,10 @@ function S:Blizzard_Professions()
 	CraftList:CreateBackdrop('Transparent')
 	CraftList.backdrop:SetInside()
 	S:HandleEditBox(CraftList.SearchBox)
-	S:HandleButton(CraftList.FilterButton)
-	S:HandleCloseButton(CraftList.FilterButton.ResetButton)
+	if CraftList.FilterButton then
+		S:HandleButton(CraftList.FilterButton)
+		if CraftList.FilterButton.ResetButton then S:HandleCloseButton(CraftList.FilterButton.ResetButton) end
+	end
 
 	local SchematicForm = CraftingPage.SchematicForm
 	SchematicForm:StripTextures()
@@ -280,7 +282,7 @@ function S:Blizzard_Professions()
 	BrowseList:StripTextures()
 	S:HandleTrimScrollBar(BrowseList.ScrollBar, true)
 	S:HandleEditBox(BrowseList.SearchBox)
-	S:HandleButton(BrowseList.FilterButton)
+	if BrowseList.FilterButton then S:HandleButton(BrowseList.FilterButton) end
 	BrowseList.BackgroundNineSlice:SetTemplate('Transparent')
 
 	local OrderList = Orders.BrowseFrame.OrderList
@@ -303,11 +305,11 @@ function S:Blizzard_Professions()
 	local OrderInfo = OrderView.OrderInfo
 	OrderInfo:StripTextures()
 	OrderInfo:CreateBackdrop('Transparent')
-	S:HandleButton(OrderInfo.BackButton)
-	S:HandleButton(OrderInfo.IgnoreButton)
-	S:HandleButton(OrderInfo.StartOrderButton)
-	S:HandleButton(OrderInfo.DeclineOrderButton)
-	S:HandleButton(OrderInfo.ReleaseOrderButton)
+	if OrderInfo.BackButton then S:HandleButton(OrderInfo.BackButton) end
+	if OrderInfo.IgnoreButton then S:HandleButton(OrderInfo.IgnoreButton) end
+	if OrderInfo.StartOrderButton then S:HandleButton(OrderInfo.StartOrderButton) end
+	if OrderInfo.DeclineOrderButton then S:HandleButton(OrderInfo.DeclineOrderButton) end
+	if OrderInfo.ReleaseOrderButton then S:HandleButton(OrderInfo.ReleaseOrderButton) end
 	S:HandleEditBox(OrderInfo.NoteBox)
 	if OrderInfo.NoteBox.backdrop then
 		OrderInfo.NoteBox.backdrop:SetTemplate('Transparent')
@@ -321,7 +323,7 @@ function S:Blizzard_Professions()
 	OrderDetails.Background:SetAlpha(.5)
 
 	local OrderSchematicForm = OrderDetails.SchematicForm
-	S:HandleCheckBox(OrderSchematicForm.AllocateBestQualityCheckBox)
+	if OrderSchematicForm.AllocateBestQualityCheckBox then S:HandleCheckBox(OrderSchematicForm.AllocateBestQualityCheckBox) end
 
 	hooksecurefunc(OrderSchematicForm, 'Init', function(frame)
 		for slot in frame.reagentSlotPool:EnumerateActive() do

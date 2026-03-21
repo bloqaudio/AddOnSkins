@@ -16,6 +16,7 @@ function S:Blizzard_MajorFactions()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.majorFactions) then return end
 
 	local RenownFrame = _G.MajorFactionRenownFrame
+	if not RenownFrame then return end
 	RenownFrame:SetTemplate('Transparent')
 	S:HandleCloseButton(RenownFrame.CloseButton)
 

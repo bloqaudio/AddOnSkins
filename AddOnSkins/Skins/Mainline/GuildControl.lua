@@ -72,13 +72,17 @@ function S:Blizzard_GuildControlUI()
 
 	S:HandleButton(_G.GuildControlUIRankOrderFrameNewButton)
 	S:HandleCloseButton(_G.GuildControlUICloseButton)
-	S:HandleDropDownBox(_G.GuildControlUIRankBankFrameRankDropDown, 180)
-	S:HandleScrollBar(_G.GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
-	S:HandleDropDownBox(_G.GuildControlUINavigationDropDown)
-	S:HandleDropDownBox(_G.GuildControlUIRankSettingsFrameRankDropDown, 180)
-	_G.GuildControlUINavigationDropDownButton:Width(20)
-	_G.GuildControlUIRankSettingsFrameRankDropDownButton:Width(20)
-	_G.GuildControlUIRankBankFrameRankDropDownButton:Width(20)
+	if _G.GuildControlUIRankBankFrameRankDropDown then S:HandleDropDownBox(_G.GuildControlUIRankBankFrameRankDropDown, 180) end
+	if _G.GuildControlUIRankBankFrameInsetScrollFrameScrollBar then S:HandleScrollBar(_G.GuildControlUIRankBankFrameInsetScrollFrameScrollBar) end
+	if _G.GuildControlUINavigationDropDown then
+		S:HandleDropDownBox(_G.GuildControlUINavigationDropDown)
+		if _G.GuildControlUINavigationDropDownButton then _G.GuildControlUINavigationDropDownButton:Width(20) end
+	end
+	if _G.GuildControlUIRankSettingsFrameRankDropDown then
+		S:HandleDropDownBox(_G.GuildControlUIRankSettingsFrameRankDropDown, 180)
+		if _G.GuildControlUIRankSettingsFrameRankDropDownButton then _G.GuildControlUIRankSettingsFrameRankDropDownButton:Width(20) end
+	end
+	if _G.GuildControlUIRankBankFrameRankDropDownButton then _G.GuildControlUIRankBankFrameRankDropDownButton:Width(20) end
 	_G.GuildControlUIRankBankFrame:StripTextures()
 	_G.GuildControlUIRankBankFrameInset:StripTextures()
 	_G.GuildControlUIRankBankFrameInsetScrollFrame:StripTextures()

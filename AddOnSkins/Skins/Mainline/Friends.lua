@@ -86,7 +86,7 @@ local function ReskinFriendButton(button)
 		button.IsSkinned = true
 	end
 
-	button.bg:SetShown(button.gameIcon:IsShown())
+	if button.bg then button.bg:SetShown(button.gameIcon:IsShown()) end
 end
 
 local function HandleTabs()
@@ -113,7 +113,7 @@ function S:FriendsFrame()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.friends) then return end
 
 	S:HandleTrimScrollBar(_G.FriendsListFrame.ScrollBar)
-	S:HandleTrimScrollBar(_G.IgnoreListFrame.ScrollBar)
+	if _G.IgnoreListFrame then S:HandleTrimScrollBar(_G.IgnoreListFrame.ScrollBar) end
 	S:HandleTrimScrollBar(_G.WhoFrame.ScrollBar)
 	S:HandleTrimScrollBar(_G.FriendsFriendsFrame.ScrollBar)
 	S:HandleTrimScrollBar(_G.QuickJoinFrame.ScrollBar)
@@ -142,11 +142,11 @@ function S:FriendsFrame()
 	}
 
 	for _, button in pairs(buttons) do
-		S:HandleButton(_G[button])
+		if _G[button] then S:HandleButton(_G[button]) end
 	end
 
 	for _, object in pairs(StripAllTextures) do
-		_G[object]:StripTextures()
+		if _G[object] then _G[object]:StripTextures() end
 	end
 
 	local mainFrames = {
@@ -155,19 +155,20 @@ function S:FriendsFrame()
 	}
 
 	for _, frame in pairs(mainFrames) do
-		_G[frame]:StripTextures()
+		if _G[frame] then _G[frame]:StripTextures() end
 	end
 
 	local FriendsFrame = _G.FriendsFrame
 	S:HandlePortraitFrame(FriendsFrame)
 
-	_G.FriendsFrameIcon:Hide()
-	_G.IgnoreListFrame:StripTextures()
+	if _G.FriendsFrameIcon then _G.FriendsFrameIcon:Hide() end
+	if _G.IgnoreListFrame then _G.IgnoreListFrame:StripTextures() end
 
-	S:HandleDropDownBox(_G.FriendsFrameStatusDropDown, 70)
-
-	_G.FriendsFrameStatusDropDown:ClearAllPoints()
-	_G.FriendsFrameStatusDropDown:Point('TOPLEFT', FriendsFrame, 'TOPLEFT', 5, -24)
+	if _G.FriendsFrameStatusDropDown then
+		S:HandleDropDownBox(_G.FriendsFrameStatusDropDown, 70)
+		_G.FriendsFrameStatusDropDown:ClearAllPoints()
+		_G.FriendsFrameStatusDropDown:Point('TOPLEFT', FriendsFrame, 'TOPLEFT', 5, -24)
+	end
 
 	local FriendsFrameBattlenetFrame = _G.FriendsFrameBattlenetFrame
 	FriendsFrameBattlenetFrame:StripTextures()
@@ -186,7 +187,7 @@ function S:FriendsFrame()
 	BattlenetFrame:SetScript('OnEnter', BattleNetFrame_OnEnter)
 	BattlenetFrame:SetScript('OnLeave', BattleNetFrame_OnLeave)
 
-	FriendsFrameBattlenetFrame.BroadcastButton:Kill() -- We use the BattlenetFrame to enter a Status Message
+	if FriendsFrameBattlenetFrame.BroadcastButton then FriendsFrameBattlenetFrame.BroadcastButton:Kill() end -- We use the BattlenetFrame to enter a Status Message
 
 	FriendsFrameBattlenetFrame.UnavailableInfoFrame.Bg:SetTexture(nil)
 	FriendsFrameBattlenetFrame.UnavailableInfoFrame:SetTemplate('Transparent')
@@ -261,14 +262,20 @@ function S:FriendsFrame()
 	end)
 
 	--Who Frame
-	_G.WhoFrameListInset:StripTextures()
-	_G.WhoFrameListInset.NineSlice:Hide()
-	_G.WhoFrameEditBoxInset:StripTextures()
-	_G.WhoFrameEditBoxInset.NineSlice:Hide()
+	if _G.WhoFrameListInset then
+		_G.WhoFrameListInset:StripTextures()
+		if _G.WhoFrameListInset.NineSlice then _G.WhoFrameListInset.NineSlice:Hide() end
+	end
+	if _G.WhoFrameEditBoxInset then
+		_G.WhoFrameEditBoxInset:StripTextures()
+		if _G.WhoFrameEditBoxInset.NineSlice then _G.WhoFrameEditBoxInset.NineSlice:Hide() end
 
-	_G.WhoFrameEditBox:CreateBackdrop('Transparent')
-	_G.WhoFrameEditBox.backdrop:Point('TOPLEFT', _G.WhoFrameEditBoxInset)
-	_G.WhoFrameEditBox.backdrop:Point('BOTTOMRIGHT', _G.WhoFrameEditBoxInset, -1, 1)
+		if _G.WhoFrameEditBox then
+			_G.WhoFrameEditBox:CreateBackdrop('Transparent')
+			_G.WhoFrameEditBox.backdrop:Point('TOPLEFT', _G.WhoFrameEditBoxInset)
+			_G.WhoFrameEditBox.backdrop:Point('BOTTOMRIGHT', _G.WhoFrameEditBoxInset, -1, 1)
+		end
+	end
 
 	--Increase width of Level column slightly
 	WhoFrameColumn_SetWidth(_G.WhoFrameColumnHeader3, 37) --Default is 32
@@ -279,7 +286,7 @@ function S:FriendsFrame()
 		end
 	end
 
-	S:HandleDropDownBox(_G.WhoFrameDropDown, 120)
+	if _G.WhoFrameDropDown then S:HandleDropDownBox(_G.WhoFrameDropDown, 120) end
 
 	-- Bottom Tabs
 	HandleTabs()
@@ -296,7 +303,7 @@ function S:FriendsFrame()
 	FriendsFriendsFrame.ScrollFrameBorder:Hide()
 	FriendsFriendsFrame:StripTextures()
 	FriendsFriendsFrame:SetTemplate('Transparent')
-	S:HandleDropDownBox(_G.FriendsFriendsFrameDropDown, 150)
+	if _G.FriendsFriendsFrameDropDown then S:HandleDropDownBox(_G.FriendsFriendsFrameDropDown, 150) end
 	S:HandleButton(FriendsFriendsFrame.SendRequestButton)
 	S:HandleButton(FriendsFriendsFrame.CloseButton)
 

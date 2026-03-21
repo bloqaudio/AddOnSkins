@@ -74,6 +74,7 @@ function S:SpellBookFrame()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.spellbook) then return end
 
 	local SpellBookFrame = _G.SpellBookFrame
+	if not SpellBookFrame then return end
 	S:HandlePortraitFrame(SpellBookFrame)
 
 	for _, frame in next, { _G.SpellBookSpellIconsFrame, _G.SpellBookSideTabsFrame, _G.SpellBookPageNavigationFrame } do

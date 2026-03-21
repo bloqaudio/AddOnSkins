@@ -12,7 +12,7 @@ local GetItemInfo = GetItemInfo
 local GetLFGProposal = GetLFGProposal
 local UnitIsGroupLeader = UnitIsGroupLeader
 local GetLFGProposalMember = GetLFGProposalMember
-local GetBackgroundTexCoordsForRole = GetBackgroundTexCoordsForRole
+local GetBackgroundTexCoordsForRole = GetBackgroundTexCoordsForRole or function() return 0, 1, 0, 1 end
 
 local C_ChallengeMode_GetAffixInfo = C_ChallengeMode.GetAffixInfo
 local C_LFGList_GetApplicationInfo = C_LFGList.GetApplicationInfo
@@ -186,9 +186,9 @@ function S:LookingForGroupFrames()
 	hooksecurefunc('LFGDungeonReadyPopup_Update', function()
 		if _G.LFGDungeonReadyDialog:IsShown() then
 			_G.LFGDungeonReadyDialog:SetTemplate('Transparent') -- Frame background (2)
-			_G.LFGDungeonReadyDialog.bottomArt:Hide()
-			_G.LFGDungeonReadyDialog.filigree:Hide()
-			_G.LFGDungeonReadyDialog.Border:Hide()
+			if _G.LFGDungeonReadyDialog.bottomArt then _G.LFGDungeonReadyDialog.bottomArt:Hide() end
+			if _G.LFGDungeonReadyDialog.filigree then _G.LFGDungeonReadyDialog.filigree:Hide() end
+			if _G.LFGDungeonReadyDialog.Border then _G.LFGDungeonReadyDialog.Border:Hide() end
 		end
 
 		if _G.LFGDungeonReadyDialogRoleIcon:IsShown() then
@@ -392,85 +392,90 @@ function S:LookingForGroupFrames()
 		end
 	end)
 
-	S:HandleDropDownBox(_G.LFDQueueFrameTypeDropDown)
+	if _G.LFDQueueFrameTypeDropDown then S:HandleDropDownBox(_G.LFDQueueFrameTypeDropDown) end
 
 	-- Raid Finder
 	_G.RaidFinderFrame:StripTextures()
 	_G.RaidFinderFrameRoleInset:StripTextures()
-	S:HandleDropDownBox(_G.RaidFinderQueueFrameSelectionDropDown)
+	if _G.RaidFinderQueueFrameSelectionDropDown then S:HandleDropDownBox(_G.RaidFinderQueueFrameSelectionDropDown) end
 	_G.RaidFinderFrameFindRaidButton:StripTextures()
 	S:HandleButton(_G.RaidFinderFrameFindRaidButton)
 	_G.RaidFinderQueueFrame:StripTextures()
-	_G.RaidFinderQueueFrameScrollFrameScrollBar:StripTextures()
+	if _G.RaidFinderQueueFrameScrollFrameScrollBar then _G.RaidFinderQueueFrameScrollFrameScrollBar:StripTextures() end
 
 	--Skin Reward Items (This works for all frames, LFD, Raid, Scenario)
 	hooksecurefunc('LFGRewardsFrame_SetItemButton', SkinItemButton)
 
-	_G.LFRBrowseFrame:HookScript('OnShow', function()
-		if not _G.LFRBrowseFrameListScrollFrameScrollBar.skinned then
-			S:HandleScrollBar(_G.LFRBrowseFrameListScrollFrameScrollBar)
-			_G.LFRBrowseFrameListScrollFrameScrollBar.skinned = true
-		end
-	end)
-
-	_G.LFRBrowseFrameRoleInset:DisableDrawLayer('BORDER')
-	_G.RaidBrowserFrameBg:Hide()
-
-	_G.LFRBrowseFrameColumnHeader1:Width(94) --Fix the columns being slightly off
-	_G.LFRBrowseFrameColumnHeader2:Width(38)
-
-	_G.RaidBrowserFrame:SetTemplate('Transparent')
-	S:HandleCloseButton(_G.RaidBrowserFrameCloseButton)
-	S:HandleButton(_G.LFRQueueFrameFindGroupButton)
-	S:HandleButton(_G.LFRQueueFrameAcceptCommentButton)
 	S:HandleTrimScrollBar(_G.LFDQueueFrameSpecific.ScrollBar)
 
-	local RoleButtons2 = {
-		_G.LFRQueueFrameRoleButtonHealer,
-		_G.LFRQueueFrameRoleButtonDPS,
-		_G.LFRQueueFrameRoleButtonTank,
-	}
-
-	_G.RaidBrowserFrame:HookScript('OnShow', function()
-		local scrollBar = _G.LFRQueueFrameSpecificListScrollFrameScrollBar
-		if not scrollBar.skinned then
-			S:HandleScrollBar(scrollBar)
-			_G.LFRBrowseFrame:StripTextures()
-
-			for _, roleButton in pairs(RoleButtons2) do
-				roleButton:SetNormalTexture(E.ClearTexture)
-				S:HandleCheckBox(roleButton.checkButton, nil, true)
-				roleButton:GetChildren():SetFrameLevel(roleButton:GetChildren():GetFrameLevel() + 1)
+	if _G.LFRBrowseFrame then
+		_G.LFRBrowseFrame:HookScript('OnShow', function()
+			if not _G.LFRBrowseFrameListScrollFrameScrollBar.skinned then
+				S:HandleScrollBar(_G.LFRBrowseFrameListScrollFrameScrollBar)
+				_G.LFRBrowseFrameListScrollFrameScrollBar.skinned = true
 			end
+		end)
 
-			for i=1, 2 do
-				local tab = _G['LFRParentFrameSideTab'..i]
-				tab:DisableDrawLayer('BACKGROUND')
+		if _G.LFRBrowseFrameRoleInset then _G.LFRBrowseFrameRoleInset:DisableDrawLayer('BORDER') end
+		if _G.LFRBrowseFrameColumnHeader1 then _G.LFRBrowseFrameColumnHeader1:Width(94) end
+		if _G.LFRBrowseFrameColumnHeader2 then _G.LFRBrowseFrameColumnHeader2:Width(38) end
+	end
 
-				tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
-				tab:GetNormalTexture():SetInside()
+	if _G.RaidBrowserFrame then
+		if _G.RaidBrowserFrameBg then _G.RaidBrowserFrameBg:Hide() end
+		_G.RaidBrowserFrame:SetTemplate('Transparent')
+		if _G.RaidBrowserFrameCloseButton then S:HandleCloseButton(_G.RaidBrowserFrameCloseButton) end
+		if _G.LFRQueueFrameFindGroupButton then S:HandleButton(_G.LFRQueueFrameFindGroupButton) end
+		if _G.LFRQueueFrameAcceptCommentButton then S:HandleButton(_G.LFRQueueFrameAcceptCommentButton) end
 
-				tab.pushed = true
-				tab:SetTemplate()
-				tab:StyleButton(true)
+		local RoleButtons2 = {
+			_G.LFRQueueFrameRoleButtonHealer,
+			_G.LFRQueueFrameRoleButtonDPS,
+			_G.LFRQueueFrameRoleButtonTank,
+		}
 
-				hooksecurefunc(tab:GetHighlightTexture(), 'SetTexture', ClearSetTexture)
-				hooksecurefunc(tab:GetCheckedTexture(), 'SetTexture', ClearSetTexture)
+		_G.RaidBrowserFrame:HookScript('OnShow', function()
+			local scrollBar = _G.LFRQueueFrameSpecificListScrollFrameScrollBar
+			if scrollBar and not scrollBar.skinned then
+				S:HandleScrollBar(scrollBar)
+				if _G.LFRBrowseFrame then _G.LFRBrowseFrame:StripTextures() end
+
+				for _, roleButton in pairs(RoleButtons2) do
+					if roleButton then
+						roleButton:SetNormalTexture(E.ClearTexture)
+						S:HandleCheckBox(roleButton.checkButton, nil, true)
+						roleButton:GetChildren():SetFrameLevel(roleButton:GetChildren():GetFrameLevel() + 1)
+					end
+				end
+
+				for i=1, 2 do
+					local tab = _G['LFRParentFrameSideTab'..i]
+					if tab then
+						tab:DisableDrawLayer('BACKGROUND')
+						tab:GetNormalTexture():SetTexCoord(unpack(E.TexCoords))
+						tab:GetNormalTexture():SetInside()
+						tab.pushed = true
+						tab:SetTemplate()
+						tab:StyleButton(true)
+						hooksecurefunc(tab:GetHighlightTexture(), 'SetTexture', ClearSetTexture)
+						hooksecurefunc(tab:GetCheckedTexture(), 'SetTexture', ClearSetTexture)
+					end
+				end
+
+				for i=1, 7 do
+					local tab = _G['LFRBrowseFrameColumnHeader'..i]
+					if tab then tab:DisableDrawLayer('BACKGROUND') end
+				end
+
+				if _G.LFRBrowseFrameRaidDropDown then S:HandleDropDownBox(_G.LFRBrowseFrameRaidDropDown) end
+				if _G.LFRBrowseFrameRefreshButton then S:HandleButton(_G.LFRBrowseFrameRefreshButton) end
+				if _G.LFRBrowseFrameInviteButton then S:HandleButton(_G.LFRBrowseFrameInviteButton) end
+				if _G.LFRBrowseFrameSendMessageButton then S:HandleButton(_G.LFRBrowseFrameSendMessageButton) end
+
+				scrollBar.skinned = true
 			end
-
-			for i=1, 7 do
-				local tab = _G['LFRBrowseFrameColumnHeader'..i]
-				tab:DisableDrawLayer('BACKGROUND')
-			end
-
-			S:HandleDropDownBox(_G.LFRBrowseFrameRaidDropDown)
-			S:HandleButton(_G.LFRBrowseFrameRefreshButton)
-			S:HandleButton(_G.LFRBrowseFrameInviteButton)
-			S:HandleButton(_G.LFRBrowseFrameSendMessageButton)
-
-			scrollBar.skinned = true
-		end
-	end)
+		end)
+	end
 
 	--[[
 		LFGInvitePopup_Update('Elvz', true, true, true)
@@ -486,8 +491,10 @@ function S:LookingForGroupFrames()
 	S:HandleButton(_G[_G.LFDQueueFrame.PartyBackfill:GetName()..'NoBackfillButton'])
 	S:HandleButton(_G[_G.RaidFinderQueueFrame.PartyBackfill:GetName()..'BackfillButton'])
 	S:HandleButton(_G[_G.RaidFinderQueueFrame.PartyBackfill:GetName()..'NoBackfillButton'])
-	_G.LFDQueueFrameRandomScrollFrameScrollBar:StripTextures()
-	S:HandleScrollBar(_G.LFDQueueFrameRandomScrollFrameScrollBar)
+	if _G.LFDQueueFrameRandomScrollFrameScrollBar then
+		_G.LFDQueueFrameRandomScrollFrameScrollBar:StripTextures()
+		S:HandleScrollBar(_G.LFDQueueFrameRandomScrollFrameScrollBar)
+	end
 
 	--LFGListFrame
 	local LFGListFrame = _G.LFGListFrame
@@ -515,9 +522,9 @@ function S:LookingForGroupFrames()
 	S:HandleEditBox(LFGListFrame.EntryCreation.VoiceChat.EditBox)
 	S:HandleEditBox(LFGListFrame.EntryCreation.Name)
 
-	S:HandleDropDownBox(_G.LFGListEntryCreationActivityDropDown)
-	S:HandleDropDownBox(_G.LFGListEntryCreationGroupDropDown)
-	S:HandleDropDownBox(_G.LFGListEntryCreationPlayStyleDropdown)
+	if _G.LFGListEntryCreationActivityDropDown then S:HandleDropDownBox(_G.LFGListEntryCreationActivityDropDown) end
+	if _G.LFGListEntryCreationGroupDropDown then S:HandleDropDownBox(_G.LFGListEntryCreationGroupDropDown) end
+	if _G.LFGListEntryCreationPlayStyleDropdown then S:HandleDropDownBox(_G.LFGListEntryCreationPlayStyleDropdown) end
 
 	S:HandleCheckBox(LFGListFrame.EntryCreation.ItemLevel.CheckButton)
 	S:HandleCheckBox(LFGListFrame.EntryCreation.MythicPlusRating.CheckButton)
@@ -561,8 +568,9 @@ function S:LookingForGroupFrames()
 	LFGListFrame.SearchPanel.ResultsInset:StripTextures()
 	S:HandleTrimScrollBar(_G.LFGListFrame.SearchPanel.ScrollBar)
 
-	S:HandleButton(LFGListFrame.SearchPanel.FilterButton)
-	LFGListFrame.SearchPanel.FilterButton:Point('LEFT', LFGListFrame.SearchPanel.SearchBox, 'RIGHT', 5, 0)
+	if LFGListFrame.SearchPanel.FilterButton then
+		S:HandleButton(LFGListFrame.SearchPanel.FilterButton)
+	end
 	S:HandleButton(LFGListFrame.SearchPanel.RefreshButton)
 	S:HandleButton(LFGListFrame.SearchPanel.BackToGroupButton)
 	LFGListFrame.SearchPanel.RefreshButton:Size(24)

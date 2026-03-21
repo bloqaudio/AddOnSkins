@@ -20,6 +20,7 @@ function S:LossOfControlFrame()
 	LossOfControlFrame.AbilityName:ClearAllPoints()
 	LossOfControlFrame:Size(LossOfControlFrame.Icon:GetWidth() + 50)
 
+	if not _G.LossOfControlFrame_SetUpDisplay then return end
 	hooksecurefunc('LossOfControlFrame_SetUpDisplay', function(s)
 		s.Icon:ClearAllPoints()
 		s.Icon:Point('CENTER', s, 'CENTER', 0, 0)

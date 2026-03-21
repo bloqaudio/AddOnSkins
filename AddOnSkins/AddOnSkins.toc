@@ -1,6 +1,6 @@
-## Interface: 110107
+## Interface: 120001
 ## Title: |cff16C3F2AddOn|r|cFFFFFFFFSkins|r
-## Version: 4.73
+## Version: 5.00
 ## Author: Azilroka, Nihilistzsche
 ## SavedVariables: AddOnSkinsDB, AddOnSkinsDS
 ## OptionalDeps: AllTheThings, ElvUI
@@ -15,4 +15,4 @@ Core\Load_Core.xml
 Embed\Load_Embed.xml
 
 Skins\AddOns\Load_Skins.xml
-# Skins\Mainline\Load_Skins.xml
+Skins\Mainline\Load_Skins.xml

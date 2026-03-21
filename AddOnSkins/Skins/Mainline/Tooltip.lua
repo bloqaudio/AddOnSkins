@@ -27,7 +27,6 @@ function S:StyleTooltips()
 		_G.ElvUIConfigTooltip,
 		_G.ElvUISpellBookTooltip,
 		-- libs
-		_G.LibDBIconTooltip,
 		_G.SettingsTooltip,
 	} do
 		TT:SetStyle(tt)
@@ -62,11 +61,11 @@ function S:TooltipFrames()
 	E:RegisterStatusBar(_G.GameTooltipStatusBar)
 
 	-- Tooltip Styling
-	TT:SecureHook('GameTooltip_ShowStatusBar') -- Skin Status Bars
-	TT:SecureHook('GameTooltip_ShowProgressBar') -- Skin Progress Bars
-	TT:SecureHook('GameTooltip_ClearProgressBars')
-	TT:SecureHook('GameTooltip_AddQuestRewardsToTooltip') -- Color Progress Bars
-	TT:SecureHook('SharedTooltip_SetBackdropStyle', 'SetStyle') -- This also deals with other tooltip borders like AzeriteEssence Tooltip
+	if _G.GameTooltip_ShowStatusBar and not TT:IsHooked('GameTooltip_ShowStatusBar') then TT:SecureHook('GameTooltip_ShowStatusBar') end -- Skin Status Bars
+	if not TT:IsHooked('GameTooltip_ShowProgressBar') then TT:SecureHook('GameTooltip_ShowProgressBar') end -- Skin Progress Bars
+	if not TT:IsHooked('GameTooltip_ClearProgressBars') then TT:SecureHook('GameTooltip_ClearProgressBars') end
+	if not TT:IsHooked('GameTooltip_AddQuestRewardsToTooltip') then TT:SecureHook('GameTooltip_AddQuestRewardsToTooltip') end -- Color Progress Bars
+	if not TT:IsHooked('SharedTooltip_SetBackdropStyle') then TT:SecureHook('SharedTooltip_SetBackdropStyle', 'SetStyle') end -- This also deals with other tooltip borders like AzeriteEssence Tooltip
 end
 
 S:AddCallback('TooltipFrames')

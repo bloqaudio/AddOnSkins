@@ -5,7 +5,7 @@ local pairs, ipairs = pairs, ipairs
 local unpack, next = unpack, next
 local hooksecurefunc = hooksecurefunc
 local CreateColor = CreateColor
-local CharacterStatsPane = _G.CharacterStatsPane
+local CharacterStatsPane
 
 local FLYOUT_LOCATIONS = {
 	[0xFFFFFFFF] = 'PLACEINBAGS',
@@ -57,6 +57,7 @@ local function ColorizeStatPane(frame)
 end
 
 local function StatsPane(which)
+	CharacterStatsPane = CharacterStatsPane or _G.CharacterStatsPane
 	local stat = CharacterStatsPane[which]
 	S:StripTextures(stat)
 	S:CreateBackdrop(stat)

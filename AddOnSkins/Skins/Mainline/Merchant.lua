@@ -17,7 +17,7 @@ function S:MerchantFrame()
 	_G.MerchantMoneyBg:StripTextures()
 	_G.MerchantMoneyInset:StripTextures()
 
-	S:HandleDropDownBox(_G.MerchantFrameLootFilter)
+	if _G.MerchantFrameLootFilter then S:HandleDropDownBox(_G.MerchantFrameLootFilter) end
 
 	-- Center the columns on the frame
 	_G.MerchantItem1:Point('TOPLEFT', _G.MerchantFrame, 'TOPLEFT', 22, -65)
@@ -103,15 +103,21 @@ function S:MerchantFrame()
 
 	S:HandleIconBorder(_G.MerchantBuyBackItemItemButton.IconBorder)
 
-	S:HandleButton(_G.MerchantGuildBankRepairButton)
-	_G.MerchantGuildBankRepairButton:StyleButton()
-	_G.MerchantGuildBankRepairButtonIcon:SetTexCoord(0.61, 0.82, 0.1, 0.52)
-	_G.MerchantGuildBankRepairButtonIcon:SetInside()
+	if _G.MerchantGuildBankRepairButton then
+		S:HandleButton(_G.MerchantGuildBankRepairButton)
+		_G.MerchantGuildBankRepairButton:StyleButton()
+		if _G.MerchantGuildBankRepairButtonIcon then
+			_G.MerchantGuildBankRepairButtonIcon:SetTexCoord(0.61, 0.82, 0.1, 0.52)
+			_G.MerchantGuildBankRepairButtonIcon:SetInside()
+		end
+	end
 
-	S:HandleButton(_G.MerchantRepairAllButton)
-	_G.MerchantRepairAllIcon:StyleButton()
-	_G.MerchantRepairAllIcon:SetTexCoord(0.34, 0.1, 0.34, 0.535, 0.535, 0.1, 0.535, 0.535)
-	_G.MerchantRepairAllIcon:SetInside()
+	if _G.MerchantRepairAllButton then S:HandleButton(_G.MerchantRepairAllButton) end
+	if _G.MerchantRepairAllIcon then
+		_G.MerchantRepairAllIcon:StyleButton()
+		_G.MerchantRepairAllIcon:SetTexCoord(0.34, 0.1, 0.34, 0.535, 0.535, 0.1, 0.535, 0.535)
+		_G.MerchantRepairAllIcon:SetInside()
+	end
 
 	S:HandleNextPrevButton(_G.MerchantNextPageButton, nil, nil, true, true)
 	S:HandleNextPrevButton(_G.MerchantPrevPageButton, nil, nil, true, true)

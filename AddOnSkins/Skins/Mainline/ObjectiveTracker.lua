@@ -6,17 +6,20 @@ local pairs, unpack = pairs, unpack
 local hooksecurefunc = hooksecurefunc
 local InCombatLockdown = InCombatLockdown
 
-local headers = {
-	_G.ObjectiveTrackerBlocksFrame.QuestHeader,
-	_G.ObjectiveTrackerBlocksFrame.AchievementHeader,
-	_G.ObjectiveTrackerBlocksFrame.ScenarioHeader,
-	_G.ObjectiveTrackerBlocksFrame.CampaignQuestHeader,
-	_G.ObjectiveTrackerBlocksFrame.ProfessionHeader,
-	_G.ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader,
-	_G.BONUS_OBJECTIVE_TRACKER_MODULE.Header,
-	_G.WORLD_QUEST_TRACKER_MODULE.Header,
-	_G.ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader
-}
+local headers = {}
+if _G.ObjectiveTrackerBlocksFrame then
+	headers = {
+		_G.ObjectiveTrackerBlocksFrame.QuestHeader,
+		_G.ObjectiveTrackerBlocksFrame.AchievementHeader,
+		_G.ObjectiveTrackerBlocksFrame.ScenarioHeader,
+		_G.ObjectiveTrackerBlocksFrame.CampaignQuestHeader,
+		_G.ObjectiveTrackerBlocksFrame.ProfessionHeader,
+		_G.ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader,
+		_G.BONUS_OBJECTIVE_TRACKER_MODULE and _G.BONUS_OBJECTIVE_TRACKER_MODULE.Header,
+		_G.WORLD_QUEST_TRACKER_MODULE and _G.WORLD_QUEST_TRACKER_MODULE.Header,
+		_G.ObjectiveTrackerFrame and _G.ObjectiveTrackerFrame.BlocksFrame and _G.ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader,
+	}
+end
 
 local function SkinOjectiveTrackerHeaders(header)
 	if not (header and header.added and header:IsShown()) then return end
@@ -215,6 +218,7 @@ end
 function S:ObjectiveTrackerFrame()
 	if not (E.private.skins.blizzard.enable and E.private.skins.blizzard.objectiveTracker) then return end
 
+	if not _G.ObjectiveTrackerFrame.HeaderMenu then return end
 	local minimize = _G.ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
 	minimize:StripTextures(nil, true)
 	minimize:Size(16, 16)

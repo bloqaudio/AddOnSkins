@@ -3,8 +3,8 @@ local AS, L, S, R = unpack(AddOnSkins)
 local _G = _G
 local gsub = gsub
 local unpack = unpack
-local GetAddOnInfo = GetAddOnInfo
-local GetAddOnEnableState = GetAddOnEnableState
+local GetAddOnInfo = C_AddOns.GetAddOnInfo
+local GetAddOnEnableState = C_AddOns.GetAddOnEnableState
 local UIDropDownMenu_GetSelectedValue = UIDropDownMenu_GetSelectedValue
 local hooksecurefunc = hooksecurefunc
 

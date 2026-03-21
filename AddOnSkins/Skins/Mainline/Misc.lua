@@ -140,19 +140,21 @@ function S:BlizzardMiscFrames()
 	-- since we cant hook `CinematicFrame_OnShow` or `CinematicFrame_OnEvent` directly
 	-- we can just hook onto this function so that we can get the correct `self`
 	-- this is called through `CinematicFrame_OnShow` so the result would still happen where we want
-	hooksecurefunc('CinematicFrame_OnDisplaySizeChanged', function(s)
-		if s and s.closeDialog and not s.closeDialog.template then
-			s.closeDialog:StripTextures()
-			s.closeDialog:SetTemplate('Transparent')
-			s:SetScale(E.uiscale)
+	if _G.CinematicFrame_OnDisplaySizeChanged then
+		hooksecurefunc('CinematicFrame_OnDisplaySizeChanged', function(s)
+			if s and s.closeDialog and not s.closeDialog.template then
+				s.closeDialog:StripTextures()
+				s.closeDialog:SetTemplate('Transparent')
+				s:SetScale(E.uiscale)
 
-			local dialogName = s.closeDialog.GetName and s.closeDialog:GetName()
-			local closeButton = s.closeDialog.ConfirmButton or (dialogName and _G[dialogName..'ConfirmButton'])
-			local resumeButton = s.closeDialog.ResumeButton or (dialogName and _G[dialogName..'ResumeButton'])
-			if closeButton then S:HandleButton(closeButton) end
-			if resumeButton then S:HandleButton(resumeButton) end
-		end
-	end)
+				local dialogName = s.closeDialog.GetName and s.closeDialog:GetName()
+				local closeButton = s.closeDialog.ConfirmButton or (dialogName and _G[dialogName..'ConfirmButton'])
+				local resumeButton = s.closeDialog.ResumeButton or (dialogName and _G[dialogName..'ResumeButton'])
+				if closeButton then S:HandleButton(closeButton) end
+				if resumeButton then S:HandleButton(resumeButton) end
+			end
+		end)
+	end
 
 	-- same as above except `MovieFrame_OnEvent` and `MovieFrame_OnShow`
 	-- cant be hooked directly so we can just use this
@@ -227,6 +229,7 @@ function S:BlizzardMiscFrames()
 
 		for j = 1, 4 do
 			local button = StaticPopup['button'..j]
+			if not button then break end
 			S:HandleButton(button)
 
 			button:SetFrameLevel(button:GetFrameLevel() + 1)
@@ -249,19 +252,23 @@ function S:BlizzardMiscFrames()
 		editbox.backdrop:Point('TOPLEFT', -2, -4)
 		editbox.backdrop:Point('BOTTOMRIGHT', 2, 4)
 
-		_G['StaticPopup'..i..'ItemFrameNameFrame']:Kill()
-		_G['StaticPopup'..i..'ItemFrameIconTexture']:SetTexCoord(unpack(E.TexCoords))
-		_G['StaticPopup'..i..'ItemFrameIconTexture']:SetInside()
+		if _G['StaticPopup'..i..'ItemFrameNameFrame'] then _G['StaticPopup'..i..'ItemFrameNameFrame']:Kill() end
+		if _G['StaticPopup'..i..'ItemFrameIconTexture'] then
+			_G['StaticPopup'..i..'ItemFrameIconTexture']:SetTexCoord(unpack(E.TexCoords))
+			_G['StaticPopup'..i..'ItemFrameIconTexture']:SetInside()
+		end
 
 		local itemFrame = _G['StaticPopup'..i..'ItemFrame']
-		itemFrame:SetTemplate()
-		itemFrame:StyleButton()
-		S:HandleIconBorder(itemFrame.IconBorder)
+		if itemFrame then
+			itemFrame:SetTemplate()
+			itemFrame:StyleButton()
+			S:HandleIconBorder(itemFrame.IconBorder)
 
-		local normTex = itemFrame:GetNormalTexture()
-		if normTex then
-			normTex:SetTexture()
-			hooksecurefunc(normTex, 'SetTexture', ClearSetTexture)
+			local normTex = itemFrame:GetNormalTexture()
+			if normTex then
+				normTex:SetTexture()
+				hooksecurefunc(normTex, 'SetTexture', ClearSetTexture)
+			end
 		end
 	end
 

@@ -58,6 +58,7 @@ function S:LootFrame()
 
 	-- Loot history frame
 	local LootHistoryFrame = _G.LootHistoryFrame
+	if not LootHistoryFrame then return end
 	LootHistoryFrame:StripTextures()
 	S:HandleCloseButton(LootHistoryFrame.CloseButton)
 	LootHistoryFrame:StripTextures()
