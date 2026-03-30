@@ -93,7 +93,7 @@
 	<Script file="TalkingHead.lua"/>
 	<Script file="Taxi.lua"/>
 	<Script file="TimeManager.lua"/>
-	<Script file="Tooltip.lua"/>
+	<!--Script file="Tooltip.lua"/--><!-- ElvUI handles tooltip skinning natively -->
 	<Script file="TorghastLevelPicker.lua"/>
 	<Script file="Trade.lua"/>
 	<Script file="Trainer.lua"/>
