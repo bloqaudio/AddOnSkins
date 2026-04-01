@@ -228,11 +228,6 @@ function R:Libraries()
 		end
 	end
 
-	local DBIcon = LibStub("LibDBIcon-1.0", true)
-	if DBIcon and DBIcon.tooltip and DBIcon.tooltip:IsObjectType('GameTooltip') then
-		S:HandleTooltip(DBIcon.tooltip, nil, true)
-	end
-
 	local LSF = LibStub("LibSimpleFrame-Mod-1.0", true)
 	if LSF then
 		for _, frame in pairs(LSF.registry) do
@@ -271,7 +266,7 @@ function R:Libraries()
 		S:SecureHook(LQT, 'Acquire', function()
 			for _, tooltip in LQT:IterateTooltips() do
 				if not tooltip.isSkinned then
-					S:HandleTooltip(tooltip, nil, true)
+					S:HandleTooltip(tooltip)
 					tooltip.isSkinned = true
 				end
 			end
@@ -283,7 +278,7 @@ function R:Libraries()
 		S:SecureHook(LQTRS, 'Acquire', function()
 			for _, tooltip in LQTRS:IterateTooltips() do
 				if not tooltip.isSkinned then
-					S:HandleTooltip(tooltip, nil, true)
+					S:HandleTooltip(tooltip)
 					tooltip.isSkinned = true
 				end
 			end

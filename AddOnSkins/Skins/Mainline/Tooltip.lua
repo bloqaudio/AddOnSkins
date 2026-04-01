@@ -27,7 +27,6 @@ function S:StyleTooltips()
 		E.ConfigTooltip,
 		E.SpellBookTooltip,
 		-- libs
-		_G.LibDBIconTooltip,
 		_G.SettingsTooltip,
 	} do
 		TT:SetStyle(tt)
