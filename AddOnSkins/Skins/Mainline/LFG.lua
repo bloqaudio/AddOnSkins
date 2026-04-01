@@ -98,48 +98,58 @@ local function SetRoleIcon(self, resultID)
 end
 
 local function HandleAffixIcons(self)
+	if not self or not self.Affixes then return end
+
 	local MapID, _, PowerLevel = C_ChallengeMode_GetSlottedKeystoneInfo()
 
 	if MapID then
 		local Name = C_ChallengeMode_GetMapUIInfo(MapID)
 
-		if Name and PowerLevel then
+		if Name and PowerLevel and self.DungeonName then
 			self.DungeonName:SetText(Name.. ' |cffffffff-|r (' .. PowerLevel .. ')')
 		end
 
-		self.PowerLevel:SetText('')
+		if self.PowerLevel then
+			self.PowerLevel:SetText('')
+		end
 	end
 
 	for _, frame in ipairs(self.Affixes) do
-		frame.Border:SetTexture()
-		frame.Portrait:SetTexture()
-
-		if frame.info then
-			frame.Portrait:SetTexture(_G.CHALLENGE_MODE_EXTRA_AFFIX_INFO[frame.info.key].texture)
-		elseif frame.affixID then
-			local _, _, filedataid = C_ChallengeMode_GetAffixInfo(frame.affixID)
-			frame.Portrait:SetTexture(filedataid)
+		if frame.Border then
+			frame.Border:SetTexture()
 		end
 
-		S:HandleIcon(frame.Portrait, true)
+		if frame.Portrait then
+			frame.Portrait:SetTexture()
 
-		frame.Percent:FontTemplate(E.media.normFont, 16, 'OUTLINE')
+			if frame.info then
+				local affixInfo = _G.CHALLENGE_MODE_EXTRA_AFFIX_INFO and _G.CHALLENGE_MODE_EXTRA_AFFIX_INFO[frame.info.key]
+				if affixInfo then
+					frame.Portrait:SetTexture(affixInfo.texture)
+				end
+			elseif frame.affixID then
+				local _, _, filedataid = C_ChallengeMode_GetAffixInfo(frame.affixID)
+				if filedataid then
+					frame.Portrait:SetTexture(filedataid)
+				end
+			end
+
+			S:HandleIcon(frame.Portrait, true)
+		end
+
+		if frame.Percent then
+			frame.Percent:FontTemplate(E.media.normFont, 16, 'OUTLINE')
+		end
 	end
 end
 
 local function DungeonReadyStatus_UpdateIcon(button, role)
+	if not button or not button.texture then return end
 	if not role then role = select(2, GetLFGProposalMember(button:GetID())) end
 
 	button.texture:SetTexture(E.Media.Textures.RolesHQ)
 	button.texture:SetAlpha(0.6)
-
-	if role == 'DAMAGER' then
-		button.texture:SetTexCoord(_G.LFDQueueFrameRoleButtonDPS.background:GetTexCoord())
-	elseif role == 'TANK' then
-		button.texture:SetTexCoord(_G.LFDQueueFrameRoleButtonTank.background:GetTexCoord())
-	elseif role == 'HEALER' then
-		button.texture:SetTexCoord(_G.LFDQueueFrameRoleButtonHealer.background:GetTexCoord())
-	end
+	button.texture:SetTexCoord(GetBackgroundTexCoordsForRole(role))
 end
 
 function S:LookingForGroupFrames()
@@ -191,15 +201,9 @@ function S:LookingForGroupFrames()
 			if _G.LFGDungeonReadyDialog.Border then _G.LFGDungeonReadyDialog.Border:Hide() end
 		end
 
-		if _G.LFGDungeonReadyDialogRoleIcon:IsShown() then
+		if _G.LFGDungeonReadyDialogRoleIcon:IsShown() and _G.LFGDungeonReadyDialogRoleIconTexture then
 			local _, _, _, _, _, _, role = GetLFGProposal()
-			if role == 'DAMAGER' then
-				_G.LFGDungeonReadyDialogRoleIconTexture:SetTexCoord(_G.LFDQueueFrameRoleButtonDPS.background:GetTexCoord())
-			elseif role == 'TANK' then
-				_G.LFGDungeonReadyDialogRoleIconTexture:SetTexCoord(_G.LFDQueueFrameRoleButtonTank.background:GetTexCoord())
-			elseif role == 'HEALER' then
-				_G.LFGDungeonReadyDialogRoleIconTexture:SetTexCoord(_G.LFDQueueFrameRoleButtonHealer.background:GetTexCoord())
-			end
+			_G.LFGDungeonReadyDialogRoleIconTexture:SetTexCoord(GetBackgroundTexCoordsForRole(role))
 		end
 	end)
 

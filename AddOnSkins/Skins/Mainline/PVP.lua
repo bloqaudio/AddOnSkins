@@ -7,24 +7,55 @@ local ipairs, pairs, unpack, next = ipairs, pairs, unpack, next
 
 local GetItemInfo = GetItemInfo
 local GetItemQualityColor = GetItemQualityColor
+local GetBackgroundTexCoordsForRole = GetBackgroundTexCoordsForRole or function() return 0, 1, 0, 1 end
 local hooksecurefunc = hooksecurefunc
 
 local ITEMQUALITY_ARTIFACT = Enum.ItemQuality.Artifact
 local CurrencyContainerUtil_GetCurrencyContainerInfo = CurrencyContainerUtil.GetCurrencyContainerInfo
 local C_CurrencyInfo_GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
 
-local function HandleRoleChecks(button, ...)
+local function HandleRoleChecks(button, role)
+	if not button then return end
+
 	button:StripTextures()
 	button:DisableDrawLayer('ARTWORK')
 	button:DisableDrawLayer('OVERLAY')
 
 	button.bg = button:CreateTexture(nil, 'BACKGROUND', nil, -7)
 	button.bg:SetTexture(E.Media.Textures.RolesHQ)
-	button.bg:SetTexCoord(...)
+	button.bg:SetTexCoord(GetBackgroundTexCoordsForRole(role))
 	button.bg:Point('CENTER')
 	button.bg:Size(40, 40)
 	button.bg:SetAlpha(0.6)
-	S:HandleCheckBox(button.checkButton)
+
+	local checkButton = button.checkButton or button.CheckButton
+	if checkButton then
+		S:HandleCheckBox(checkButton)
+	end
+end
+
+local function HandleCategoryButton(button, texture)
+	if not button then return end
+
+	if button.Ring then
+		button.Ring:Kill()
+	end
+
+	if button.Background then
+		button.Background:Kill()
+	end
+
+	S:HandleButton(button)
+
+	if button.Icon then
+		button.Icon:Size(45)
+		button.Icon:ClearAllPoints()
+		button.Icon:Point('LEFT', 10, 0)
+		if texture then
+			button.Icon:SetTexture(texture)
+		end
+		S:HandleIcon(button.Icon, true)
+	end
 end
 
 function S:Blizzard_PVPUI()
@@ -32,28 +63,21 @@ function S:Blizzard_PVPUI()
 
 	_G.PVPUIFrame:StripTextures()
 
+	local PVPQueueFrame = _G.PVPQueueFrame
+
 	for i = 1, 2 do
 		S:HandleTab(_G['PVPUIFrameTab'..i])
 	end
 
-	for i = 1, 3 do
-		local bu = _G['PVPQueueFrameCategoryButton'..i]
-		bu.Ring:Kill()
-		bu.Background:Kill()
-		S:HandleButton(bu)
-
-		bu.Icon:Size(45)
-		bu.Icon:ClearAllPoints()
-		bu.Icon:Point('LEFT', 10, 0)
-		S:HandleIcon(bu.Icon, true)
+	for i, texture in ipairs({
+		236396, -- interface/icons/achievement_bg_winwsg.blp
+		236368, -- interface/icons/achievement_bg_killxenemies_generalsroom.blp
+		464820, -- interface/icons/achievement_general_stayclassy.blp
+	}) do
+		HandleCategoryButton((PVPQueueFrame and PVPQueueFrame['CategoryButton'..i]) or _G['PVPQueueFrameCategoryButton'..i], texture)
 	end
 
-	local PVPQueueFrame = _G.PVPQueueFrame
 	PVPQueueFrame.HonorInset:StripTextures()
-
-	PVPQueueFrame.CategoryButton1.Icon:SetTexture(236396) -- interface/icons/achievement_bg_winwsg.blp
-	PVPQueueFrame.CategoryButton2.Icon:SetTexture(236368) -- interface/icons/achievement_bg_killxenemies_generalsroom.blp
-	PVPQueueFrame.CategoryButton3.Icon:SetTexture(464820) -- interface/icons/achievement_general_stayclassy.blp
 
 	local SeasonReward = PVPQueueFrame.HonorInset.RatedPanel.SeasonRewardFrame
 	SeasonReward:CreateBackdrop()
@@ -127,9 +151,9 @@ function S:Blizzard_PVPUI()
 	end)
 
 	-- New tiny Role icons in Bfa
-	HandleRoleChecks(HonorFrame.TankIcon, _G.LFDQueueFrameRoleButtonTank.background:GetTexCoord())
-	HandleRoleChecks(HonorFrame.HealerIcon, _G.LFDQueueFrameRoleButtonHealer.background:GetTexCoord())
-	HandleRoleChecks(HonorFrame.DPSIcon, _G.LFDQueueFrameRoleButtonDPS.background:GetTexCoord())
+	HandleRoleChecks(HonorFrame.TankIcon, 'TANK')
+	HandleRoleChecks(HonorFrame.HealerIcon, 'HEALER')
+	HandleRoleChecks(HonorFrame.DPSIcon, 'DAMAGER')
 
 	-- Conquest Frame
 	local ConquestFrame = _G.ConquestFrame
@@ -138,9 +162,9 @@ function S:Blizzard_PVPUI()
 
 	S:HandleButton(_G.ConquestJoinButton)
 
-	HandleRoleChecks(ConquestFrame.TankIcon, _G.LFDQueueFrameRoleButtonTank.background:GetTexCoord())
-	HandleRoleChecks(ConquestFrame.HealerIcon, _G.LFDQueueFrameRoleButtonHealer.background:GetTexCoord())
-	HandleRoleChecks(ConquestFrame.DPSIcon, _G.LFDQueueFrameRoleButtonDPS.background:GetTexCoord())
+	HandleRoleChecks(ConquestFrame.TankIcon, 'TANK')
+	HandleRoleChecks(ConquestFrame.HealerIcon, 'HEALER')
+	HandleRoleChecks(ConquestFrame.DPSIcon, 'DAMAGER')
 
 	for _, bu in pairs({ConquestFrame.RatedSoloShuffle, ConquestFrame.Arena2v2, ConquestFrame.Arena3v3, ConquestFrame.RatedBG}) do
 		local reward = bu.Reward
@@ -251,19 +275,15 @@ function S:PVPReadyDialog()
 	_G.PVPReadyDialogRoleIcon.texture:SetAlpha(0.5)
 
 	hooksecurefunc('PVPReadyDialog_Display', function(s, _, _, _, queueType, _, role)
-		if role == 'DAMAGER' then
-			_G.PVPReadyDialogRoleIcon.texture:SetTexCoord(_G.LFDQueueFrameRoleButtonDPS.background:GetTexCoord())
-		elseif role == 'TANK' then
-			_G.PVPReadyDialogRoleIcon.texture:SetTexCoord(_G.LFDQueueFrameRoleButtonTank.background:GetTexCoord())
-		elseif role == 'HEALER' then
-			_G.PVPReadyDialogRoleIcon.texture:SetTexCoord(_G.LFDQueueFrameRoleButtonHealer.background:GetTexCoord())
-		end
+		_G.PVPReadyDialogRoleIcon.texture:SetTexCoord(GetBackgroundTexCoordsForRole(role))
 
 		if queueType == 'ARENA' then
 			s:Height(100)
 		end
 
-		s.background:Hide()
+		if s.background then
+			s.background:Hide()
+		end
 	end)
 end
 

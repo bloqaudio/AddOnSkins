@@ -271,7 +271,7 @@ function R:Libraries()
 		S:SecureHook(LQT, 'Acquire', function()
 			for _, tooltip in LQT:IterateTooltips() do
 				if not tooltip.isSkinned then
-					S:HandleTooltip(tooltip)
+					S:HandleTooltip(tooltip, nil, true)
 					tooltip.isSkinned = true
 				end
 			end
@@ -283,7 +283,7 @@ function R:Libraries()
 		S:SecureHook(LQTRS, 'Acquire', function()
 			for _, tooltip in LQTRS:IterateTooltips() do
 				if not tooltip.isSkinned then
-					S:HandleTooltip(tooltip)
+					S:HandleTooltip(tooltip, nil, true)
 					tooltip.isSkinned = true
 				end
 			end
