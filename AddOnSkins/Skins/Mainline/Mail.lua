@@ -94,10 +94,17 @@ function S:MailFrame()
 	S:HandleRadioButton(_G.SendMailCODButton)
 
 	-- open mail (cod)
-	_G.OpenMailFrame:StripTextures(true)
-	_G.OpenMailFrame:SetTemplate('Transparent')
-	_G.OpenMailFrameInset:Kill()
+	local OpenMailFrame = _G.OpenMailFrame
+	OpenMailFrame:StripTextures(true)
+	S:HandleFrame(OpenMailFrame, true)
+	OpenMailFrame.backdrop:Point('TOPLEFT', -5, 0)
+	OpenMailFrame.backdrop:Point('BOTTOMRIGHT', -2, 0)
 
+	if _G.OpenMailFrameInset then
+		_G.OpenMailFrameInset:Kill()
+	end
+
+	_G.OpenMailFrameCloseButton:Point('TOPRIGHT', OpenMailFrame.backdrop, 'TOPRIGHT', 4, 3)
 	S:HandleCloseButton(_G.OpenMailFrameCloseButton)
 	S:HandleButton(_G.OpenMailReportSpamButton, true)
 	S:HandleButton(_G.OpenMailReplyButton, true)
@@ -133,7 +140,7 @@ function S:MailFrame()
 	_G.OpenMailMoneyButtonIconTexture:SetTexCoord(unpack(E.TexCoords))
 	_G.OpenMailMoneyButtonIconTexture:SetInside()
 
-	for i = 1, _G.ATTACHMENTS_MAX_SEND do
+	for i = 1, _G.ATTACHMENTS_MAX_RECEIVE do
 		local btn = _G['OpenMailAttachmentButton'..i]
 		btn:StripTextures()
 		btn:SetTemplate(nil, true)
@@ -144,7 +151,13 @@ function S:MailFrame()
 		local t = _G['OpenMailAttachmentButton'..i..'IconTexture']
 		if t then
 			t:SetTexCoord(unpack(E.TexCoords))
+			t:SetDrawLayer('ARTWORK')
 			t:SetInside()
+		end
+
+		local count = _G['OpenMailAttachmentButton'..i..'Count']
+		if count then
+			count:SetDrawLayer('OVERLAY')
 		end
 	end
 

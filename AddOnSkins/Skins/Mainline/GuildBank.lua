@@ -29,23 +29,36 @@ function S:Blizzard_GuildBankUI()
 	S:HandleButton(frame.BuyInfo.PurchaseButton, true)
 
 	frame.WithdrawButton:Point('RIGHT', frame.DepositButton, 'LEFT', -2, 0)
-	_G.GuildBankInfoScrollFrame:Point('TOPLEFT', _G.GuildBankInfo, 'TOPLEFT', -10, 12)
-	_G.GuildBankInfoScrollFrame:StripTextures()
-	_G.GuildBankInfoScrollFrame:Width(_G.GuildBankInfoScrollFrame:GetWidth() - 8)
-	_G.GuildBankTransactionsScrollFrame:StripTextures()
+	local infoScrollFrame = _G.GuildBankInfoScrollFrame
+	local infoScrollBar = _G.GuildBankInfoScrollFrameScrollBar
+	local transactionsScrollFrame = _G.GuildBankTransactionsScrollFrame
+	local transactionsScrollBar = _G.GuildBankTransactionsScrollFrameScrollBar
+
+	infoScrollFrame:Point('TOPLEFT', _G.GuildBankInfo, 'TOPLEFT', -10, 12)
+	infoScrollFrame:StripTextures()
+	infoScrollFrame:Width(infoScrollFrame:GetWidth() - 8)
+
+	if transactionsScrollFrame then
+		transactionsScrollFrame:StripTextures()
+	end
 
 	frame.BlackBG:CreateBackdrop('Transparent', nil, nil, nil, nil, nil, nil, nil, 1)
 	frame.BlackBG.backdrop:Point('TOPLEFT', frame.BlackBG, 'TOPLEFT', 4, 0)
 	frame.BlackBG.backdrop:Point('BOTTOMRIGHT', frame.BlackBG, 'BOTTOMRIGHT', -3, 3)
 
-	S:HandleScrollBar(_G.GuildBankTransactionsScrollFrameScrollBar)
-	S:HandleScrollBar(_G.GuildBankInfoScrollFrameScrollBar)
-	_G.GuildBankTransactionsScrollFrameScrollBar:ClearAllPoints()
-	_G.GuildBankTransactionsScrollFrameScrollBar:Point('TOPRIGHT', frame.BlackBG.backdrop, 'TOPRIGHT', -4, -21)
-	_G.GuildBankTransactionsScrollFrameScrollBar:Point('BOTTOMRIGHT', frame.BlackBG.backdrop, 'BOTTOMRIGHT', -4, 21)
-	_G.GuildBankInfoScrollFrameScrollBar:ClearAllPoints()
-	_G.GuildBankInfoScrollFrameScrollBar:Point('TOPRIGHT', frame.BlackBG.backdrop, 'TOPRIGHT', -4, -21)
-	_G.GuildBankInfoScrollFrameScrollBar:Point('BOTTOMRIGHT', frame.BlackBG.backdrop, 'BOTTOMRIGHT', -4, 21)
+	if transactionsScrollBar then
+		S:HandleScrollBar(transactionsScrollBar)
+		transactionsScrollBar:ClearAllPoints()
+		transactionsScrollBar:Point('TOPRIGHT', frame.BlackBG.backdrop, 'TOPRIGHT', -4, -21)
+		transactionsScrollBar:Point('BOTTOMRIGHT', frame.BlackBG.backdrop, 'BOTTOMRIGHT', -4, 21)
+	end
+
+	if infoScrollBar then
+		S:HandleScrollBar(infoScrollBar)
+		infoScrollBar:ClearAllPoints()
+		infoScrollBar:Point('TOPRIGHT', frame.BlackBG.backdrop, 'TOPRIGHT', -4, -21)
+		infoScrollBar:Point('BOTTOMRIGHT', frame.BlackBG.backdrop, 'BOTTOMRIGHT', -4, 21)
+	end
 
 	for i=1, _G.MAX_GUILDBANK_TABS do
 		local tab = _G['GuildBankTab'..i]
