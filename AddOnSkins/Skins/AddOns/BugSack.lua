@@ -11,7 +11,12 @@ function R:BugSack()
 		S:HandleButton(BugSackNextButton)
 		S:HandleButton(BugSackSendButton)
 		S:HandleButton(BugSackPrevButton)
-		S:HandleScrollBar(BugSackScrollScrollBar)
+		local scrollBar = BugSackScrollText:GetParent().ScrollBar
+		if scrollBar.GetThumb then
+			S:HandleTrimScrollBar(scrollBar)
+		else
+			S:HandleScrollBar(scrollBar)
+		end
 		for _, child in pairs({BugSackFrame:GetChildren()}) do
 			if (child:IsObjectType('Button') and child:GetScript('OnClick') == BugSack.CloseSack) then
 				S:HandleCloseButton(child)
