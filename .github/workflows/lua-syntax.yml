@@ -1,0 +1,55 @@
+name: Lua Syntax
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+jobs:
+  syntax-check:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Lua 5.1
+        uses: leafo/gh-actions-lua@v11
+        with:
+          luaVersion: "5.1"
+
+      - name: Collect changed Lua files
+        if: github.event_name == 'pull_request'
+        run: |
+          set -euo pipefail
+          git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" -- '*.lua' \
+            | while IFS= read -r file; do
+                [[ -f "${file}" ]] && echo "${file}"
+              done > /tmp/changed_lua_files.txt
+          echo "Changed Lua files:"
+          cat /tmp/changed_lua_files.txt || true
+
+      - name: Lua syntax check
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            if [[ ! -s /tmp/changed_lua_files.txt ]]; then
+              echo "No Lua files changed."
+              exit 0
+            fi
+
+            mapfile -t lua_files < /tmp/changed_lua_files.txt
+            ./.github/scripts/lua-syntax-check.sh "${lua_files[@]}"
+          else
+            ./.github/scripts/lua-syntax-check.sh
+          fi
