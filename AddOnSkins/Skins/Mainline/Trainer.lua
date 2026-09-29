@@ -61,7 +61,12 @@ function S:Blizzard_TrainerUI()
 	end)
 
 	S:HandleTrimScrollBar(_G.ClassTrainerFrame.ScrollBar)
-	S:HandleDropDownBox(_G.ClassTrainerFrameFilterDropDown, 155)
+
+	local trainerFilterDropDown = _G.ClassTrainerFrameFilterDropDown
+	local trainerFilterDropDownName = trainerFilterDropDown and trainerFilterDropDown.GetName and trainerFilterDropDown:GetName()
+	if trainerFilterDropDownName and _G[trainerFilterDropDownName..'Middle'] then
+		S:HandleDropDownBox(trainerFilterDropDown, 155)
+	end
 
 	ClassTrainerFrame:Height(ClassTrainerFrame:GetHeight() + 5)
 	ClassTrainerFrame:SetTemplate('Transparent')

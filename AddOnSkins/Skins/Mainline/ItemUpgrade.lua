@@ -5,10 +5,18 @@ local _G = _G
 local hooksecurefunc = hooksecurefunc
 
 local function Update(frame)
+	if not (frame and frame.UpgradeItemButton) then return end
+
+	local button = frame.UpgradeItemButton
+	local pushedTexture = button:GetPushedTexture()
+	local normalTexture = button:GetNormalTexture()
+
 	if frame.upgradeInfo then
-		frame.UpgradeItemButton:GetPushedTexture():SetColorTexture(0.9, 0.8, 0.1, 0.3)
-	else
-		frame.UpgradeItemButton:GetNormalTexture():SetInside()
+		if pushedTexture then
+			pushedTexture:SetColorTexture(0.9, 0.8, 0.1, 0.3)
+		end
+	elseif normalTexture then
+		normalTexture:SetInside()
 	end
 end
 
@@ -51,11 +59,21 @@ function S:Blizzard_ItemUpgradeUI()
 		frame.TopBG:CreateBackdrop('Transparent')
 	end
 
-	hooksecurefunc(frame, 'Update', Update)
+	if type(frame.UpdateUpgradeItemInfo) == 'function' then
+		hooksecurefunc(frame, 'UpdateUpgradeItemInfo', Update)
+	elseif type(frame.Update) == 'function' then
+		hooksecurefunc(frame, 'Update', Update)
+	end
+
+	Update(frame)
 
 	S:HandleIconBorder(button.IconBorder)
 	S:HandleButton(frame.UpgradeButton, true)
-	S:HandleDropDownBox(frame.ItemInfo.Dropdown, 130)
+
+	if frame.ItemInfo and frame.ItemInfo.Dropdown then
+		S:HandleDropDownBox(frame.ItemInfo.Dropdown, 130)
+	end
+
 	S:HandleCloseButton(_G.ItemUpgradeFrameCloseButton)
 end
 
